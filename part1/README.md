@@ -106,7 +106,7 @@ The Facade centralizes use-cases and hides internal complexity.
 Persistence is abstracted behind repositories, enabling DB swaps later.
 
 
-4) Business Logic Layer — Detailed Class Diagram
+## 4) Business Logic Layer — Detailed Class Diagram
 
 Goal: define entities, core fields, and relationships.
 
@@ -127,7 +127,7 @@ Notes / Business Rules Reflected
 * Review must always be linked to both a User and a Place.
 * Place <-> Amenity is many-to-many (often a join table in persistence later).
 
-5) Sequence Diagrams (API Calls)
+## 5) Sequence Diagrams (API Calls)
 
 The sequence diagrams show the flow between:
 Client → Presentation → Facade (Business) → Repository (Persistence)
@@ -161,7 +161,7 @@ Notes
 * All domain decisions are centralized in the Facade + domain models.
 * Repositories abstract storage and will later map to a real DB schema.
 
-6) Data Persistence Notes (Part 3 Preview)
+## 6) Data Persistence Notes (Part 3 Preview)
 
 Persistence is intentionally abstract in Part 1.
 Later (Part 3), repositories will be implemented with a chosen DB and ORM/queries:
@@ -170,7 +170,7 @@ Later (Part 3), repositories will be implemented with a chosen DB and ORM/querie
 * Place <-> Amenity becomes a join table
 * Foreign keys: place.owner_id, review.user_id, review.place_id
 
-7) Summary
+## 7) Summary
 
 This document provides:
 

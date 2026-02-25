@@ -13,7 +13,6 @@ class HBnBFacade:
     def create_user(self, user_data: dict) -> User:
         email = user_data.get("email")
 
-        # validation email
         if not email or "@" not in email:
             raise ValueError("Invalid email")
 
@@ -71,9 +70,21 @@ class HBnBFacade:
         amenity = self.get_amenity(amenity_id)
         if not amenity:
             return None
-
         amenity.update(amenity_data)
         return amenity
+
+    # ---------------- PLACES ----------------
+    def list_places(self):
+        return self.place_repo.get_all()
+
+    def create_place(self, data):
+        return self.place_repo.add(data)
+
+    def get_place(self, place_id):
+        return self.place_repo.get(place_id)
+
+    def update_place(self, place_id, data):
+        return self.place_repo.update(place_id, data)
 
     # ---------------- REVIEWS ----------------
     def create_review(self, review_data):

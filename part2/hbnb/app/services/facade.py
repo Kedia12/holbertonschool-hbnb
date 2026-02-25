@@ -54,3 +54,18 @@ class HBnBFacade:
             return None
         amenity.update(amenity_data)
         return amenity
+    # REVIEWS
+    def create_review(self, review_data):
+        return self.review_repo.add(review_data)
+
+    def get_review(self, review_id):
+        return self.review_repo.get(review_id)
+
+    def get_all_reviews(self):
+        return self.review_repo.get_all()
+
+    def update_review(self, review_id, data):
+        return self.review_repo.update(review_id, data)
+
+    def delete_review(self, review_id):
+        return self.review_repo.delete(review_id)

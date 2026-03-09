@@ -4,7 +4,7 @@ from app.services.facade import HBnBFacade
 
 ns = Namespace("reviews", description="Review operations")
 
-facade = HBnBFacade()
+from app.services import facade_instance as facade
 
 
 @ns.route("/")

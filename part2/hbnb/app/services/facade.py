@@ -73,16 +73,20 @@ class HBnBFacade:
         amenity.update(amenity_data)
         return amenity
 
-    # ---------------- PLACES ----------------
+# ---------------- PLACES ----------------
+from app.models.place import Place
+
+class HBnBFacade:
+    def __init__(self, place_repo):
+        self.place_repo = place_repo
+
     def list_places(self):
         return self.place_repo.get_all()
 
-    from app.models.place import Place
-
-def create_place(self, data):
-    place = Place(**data)   # créer un vrai objet Place
-    self.place_repo.add(place)
-    return place
+    def create_place(self, data):
+        place = Place(**data)
+        self.place_repo.add(place)
+        return place
 
     def get_place(self, place_id):
         return self.place_repo.get(place_id)

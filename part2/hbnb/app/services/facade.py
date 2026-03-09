@@ -77,8 +77,12 @@ class HBnBFacade:
     def list_places(self):
         return self.place_repo.get_all()
 
-    def create_place(self, data):
-        return self.place_repo.add(data)
+    from app.models.place import Place
+
+def create_place(self, data):
+    place = Place(**data)   # créer un vrai objet Place
+    self.place_repo.add(place)
+    return place
 
     def get_place(self, place_id):
         return self.place_repo.get(place_id)

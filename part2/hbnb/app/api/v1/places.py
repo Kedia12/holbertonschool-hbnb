@@ -1,11 +1,10 @@
 # app/api/v1/places.py
-
 from flask_restx import Namespace, Resource, fields
 from app.services import facade_instance as facade
 
 ns = Namespace("places", description="Place operations")
 
-# Modèle Place pour Swagger
+# Définition du modèle Place pour Swagger
 place_model = ns.model("Place", {
     "title": fields.String(required=True),
     "description": fields.String,
@@ -17,14 +16,16 @@ place_model = ns.model("Place", {
 })
 
 # ---------------- Routes pour les places ----------------
-
 @ns.route("/")
 class PlacesRoot(Resource):
+    @ns.marshal_list_with(place_model)  # <- important pour Swagger
     def get(self):
         """Lister toutes les places"""
         places = facade.get_all_places()
         return [p.to_dict() for p in places], 200
 
+    @ns.expect(place_model)
+    @ns.marshal_with(place_model, code=201)
     def post(self):
         """Créer une nouvelle place"""
         data = ns.payload
@@ -35,9 +36,7 @@ class PlacesRoot(Resource):
         return new_place.to_dict(), 201
 
 # ---------------- Routes pour gérer les amenities d'une place ----------------
-
 @ns.route("/<string:place_id>/amenities/")
-@ns.doc(False)  # <-- ne pas afficher dans Swagger/Models
 class PlaceAmenities(Resource):
     def get(self, place_id):
         """Lister tous les amenities d'une place"""

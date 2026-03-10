@@ -1,21 +1,20 @@
 from flask import request
 from flask_restx import Namespace, Resource
-from app.services.facade import HBnBFacade
+from app.services import facade_instance as facade
 
 ns = Namespace("reviews", description="Review operations")
-
-from app.services import facade_instance as facade
 
 
 @ns.route("/")
 class ReviewsRoot(Resource):
 
     def get(self):
-        """Lister les reviews"""
-        return facade.get_all_reviews(), 200
+        """List all reviews"""
+        reviews = facade.get_all_reviews()
+        return [r.to_dict() for r in reviews], 200
 
     def post(self):
-        """Créer une review"""
+        """Create review"""
         data = request.json
 
         if not data:
@@ -24,11 +23,17 @@ class ReviewsRoot(Resource):
         if "text" not in data or not data["text"]:
             return {"error": "Review text is required"}, 400
 
+        if "rating" not in data:
+            return {"error": "rating is required"}, 400
+
         if "user_id" not in data or "place_id" not in data:
             return {"error": "user_id and place_id are required"}, 400
 
-        review = facade.create_review(data)
-        return {"id": review.id}, 201
+        try:
+            review = facade.create_review(data)
+            return review.to_dict(), 201
+        except ValueError as e:
+            return {"error": str(e)}, 400
 
 
 @ns.route("/<string:review_id>")
@@ -40,7 +45,7 @@ class ReviewResource(Resource):
         if not review:
             return {"error": "Review not found"}, 404
 
-        return review, 200
+        return review.to_dict(), 200
 
     def put(self, review_id):
         data = request.json
@@ -50,7 +55,7 @@ class ReviewResource(Resource):
             return {"error": "Review not found"}, 404
 
         updated = facade.update_review(review_id, data)
-        return updated, 200
+        return updated.to_dict(), 200
 
     def delete(self, review_id):
         result = facade.delete_review(review_id)

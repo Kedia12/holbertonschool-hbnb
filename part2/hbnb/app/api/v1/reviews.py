@@ -1,66 +1,30 @@
-from flask import request
-from flask_restx import Namespace, Resource
+from flask_restx import Namespace, Resource, fields
 from app.services import facade_instance as facade
 
 ns = Namespace("reviews", description="Review operations")
 
+# Model pour Swagger
+review_model = ns.model("Review", {
+    "id": fields.String(readonly=True),
+    "text": fields.String(required=True),
+    "rating": fields.Integer(required=True),
+    "user_id": fields.String(required=True),
+    "place_id": fields.String(required=True)
+})
 
+# Routes pour les reviews
 @ns.route("/")
 class ReviewsRoot(Resource):
-
+    @ns.marshal_list_with(review_model)
     def get(self):
-        """List all reviews"""
+        """Lister toutes les reviews"""
         reviews = facade.get_all_reviews()
-        return [r.to_dict() for r in reviews], 200
+        return [r.to_dict() for r in reviews]
 
+    @ns.expect(review_model)
+    @ns.marshal_with(review_model, code=201)
     def post(self):
-        """Create review"""
-        data = request.json
-
-        if not data:
-            return {"error": "No input data provided"}, 400
-
-        if "text" not in data or not data["text"]:
-            return {"error": "Review text is required"}, 400
-
-        if "rating" not in data:
-            return {"error": "rating is required"}, 400
-
-        if "user_id" not in data or "place_id" not in data:
-            return {"error": "user_id and place_id are required"}, 400
-
-        try:
-            review = facade.create_review(data)
-            return review.to_dict(), 201
-        except ValueError as e:
-            return {"error": str(e)}, 400
-
-
-@ns.route("/<string:review_id>")
-class ReviewResource(Resource):
-
-    def get(self, review_id):
-        review = facade.get_review(review_id)
-
-        if not review:
-            return {"error": "Review not found"}, 404
-
-        return review.to_dict(), 200
-
-    def put(self, review_id):
-        data = request.json
-        review = facade.get_review(review_id)
-
-        if not review:
-            return {"error": "Review not found"}, 404
-
-        updated = facade.update_review(review_id, data)
-        return updated.to_dict(), 200
-
-    def delete(self, review_id):
-        result = facade.delete_review(review_id)
-
-        if not result:
-            return {"error": "Review not found"}, 404
-
-        return {"message": "Review deleted"}, 200
+        """Créer une nouvelle review"""
+        data = ns.payload
+        new_review = facade.create_review(data)
+        return new_review.to_dict(), 201

@@ -1,7 +1,10 @@
+# hbnb/app/services/__init__.py
+
 from app.persistence.repository import InMemoryRepository
-from app.repositories.place_repo import PlaceRepository
-from app.repositories.amenity_repo import AmenityRepository
-from app.repositories.review_repo import ReviewRepository
+from app.models.user import User
+from app.models.place import Place
+from app.models.review import Review
+from app.models.amenity import Amenity
 from app.services.facade import HBnBFacade
 
 # Create repository instances

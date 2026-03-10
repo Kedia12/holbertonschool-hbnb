@@ -1,4 +1,3 @@
-# app/api/v1/review.py
 from flask_restx import Namespace, Resource, fields
 from app.services import facade_instance as facade
 
@@ -13,16 +12,16 @@ review_model = ns.model("Review", {
 
 @ns.route("/")
 class ReviewsRoot(Resource):
+    @ns.marshal_list_with(review_model)
     def get(self):
         """Lister toutes les reviews"""
         reviews = facade.get_all_reviews()
         return [r.to_dict() for r in reviews], 200
 
+    @ns.expect(review_model)
+    @ns.marshal_with(review_model, code=201)
     def post(self):
         """Créer une nouvelle review"""
         data = ns.payload
-        try:
-            review = facade.create_review(data)
-        except ValueError as e:
-            return {"error": str(e)}, 400
+        review = facade.create_review(data)
         return review.to_dict(), 201

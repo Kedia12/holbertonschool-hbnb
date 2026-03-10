@@ -8,10 +8,10 @@ from app.models.amenity import Amenity
 from app.services.facade import HBnBFacade
 
 # Create repository instances
-user_repo = UserRepository()
-place_repo = PlaceRepository()
-amenity_repo = AmenityRepository()
-review_repo = ReviewRepository()
+user_repo = InMemoryRepository()
+place_repo = InMemoryRepository()
+amenity_repo = InMemoryRepository()
+review_repo = InMemoryRepository()
 
 # Create the facade instance with all repositories
 facade_instance = HBnBFacade(

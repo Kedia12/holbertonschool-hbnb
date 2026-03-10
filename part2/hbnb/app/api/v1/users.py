@@ -35,7 +35,7 @@ class UserList(Resource):
 
     @ns.response(200, "List of users retrieved successfully")
     def get(self):
-        users = facade.list_users()
+        users = facade.get_all_users()
         return [
             {"id": u.id, "first_name": u.first_name, "last_name": u.last_name, "email": u.email}
             for u in users

@@ -1,113 +1,53 @@
 from flask_restx import Namespace, Resource, fields
 from app.services import facade_instance as facade
 
+ns = Namespace("places", description="Place operations")
 
-class Place(BaseModel):
-    def __init__(self, title, description, price, latitude, longitude, owner):
-        super().__init__()
-        self.title = title
-        self.description = description
-        self.price = price
-        self.latitude = latitude
-        self.longitude = longitude
-        self.owner = owner
-        self.reviews = []
-        self.amenities = []
+place_model = ns.model(
+    "Place",
+    {
+        "title": fields.String(required=True),
+        "description": fields.String(required=False),
+        "price": fields.Float(required=True),
+        "latitude": fields.Float(required=True),
+        "longitude": fields.Float(required=True),
+        "owner_id": fields.String(required=True),
+        "amenities": fields.List(fields.String),
+    },
+)
 
-    @property
-    def title(self):
-        return self._title
 
-    @title.setter
-    def title(self, value):
-        if not isinstance(value, str) or not value.strip():
-            raise ValueError("title is required")
-        value = value.strip()
-        if len(value) > 100:
-            raise ValueError("title must be at most 100 characters")
-        self._title = value
+@ns.route("/")
+class PlaceList(Resource):
+    def get(self):
+        """List all places"""
+        places = facade.get_all_places()
+        return [place.to_dict() for place in places], 200
 
-    @property
-    def description(self):
-        return self._description
+    @ns.expect(place_model)
+    def post(self):
+        """Create a new place"""
+        data = ns.payload
+        try:
+            place = facade.create_place(data)
+        except ValueError as e:
+            return {"error": str(e)}, 400
+        return place.to_dict(), 201
 
-    @description.setter
-    def description(self, value):
-        if value is None:
-            self._description = ""
-            return
-        if not isinstance(value, str):
-            raise ValueError("description must be a string")
-        self._description = value
 
-    @property
-    def price(self):
-        return self._price
+@ns.route("/<place_id>")
+class PlaceResource(Resource):
+    def get(self, place_id):
+        """Get place by ID"""
+        place = facade.get_place(place_id)
+        if not place:
+            return {"error": "Place not found"}, 404
+        return place.to_dict(), 200
 
-    @price.setter
-    def price(self, value):
-        if not isinstance(value, (int, float)):
-            raise ValueError("price must be a number")
-        value = float(value)
-        if value <= 0:
-            raise ValueError("price must be a positive value")
-        self._price = value
-
-    @property
-    def latitude(self):
-        return self._latitude
-
-    @latitude.setter
-    def latitude(self, value):
-        if not isinstance(value, (int, float)):
-            raise ValueError("latitude must be a number")
-        value = float(value)
-        if value < -90.0 or value > 90.0:
-            raise ValueError("latitude must be between -90 and 90")
-        self._latitude = value
-
-    @property
-    def longitude(self):
-        return self._longitude
-
-    @longitude.setter
-    def longitude(self, value):
-        if not isinstance(value, (int, float)):
-            raise ValueError("longitude must be a number")
-        value = float(value)
-        if value < -180.0 or value > 180.0:
-            raise ValueError("longitude must be between -180 and 180")
-        self._longitude = value
-
-    @property
-    def owner(self):
-        return self._owner
-
-    @owner.setter
-    def owner(self, value):
-        if not isinstance(value, User):
-            raise ValueError("owner must be a User instance")
-        self._owner = value
-
-    def add_review(self, review):
-        if review not in self.reviews:
-            self.reviews.append(review)
-
-    def add_amenity(self, amenity):
-        if amenity not in self.amenities:
-            self.amenities.append(amenity)
-
-    def to_dict(self):
-        return {
-            "id": self.id,
-            "title": self.title,
-            "description": self.description,
-            "price": self.price,
-            "latitude": self.latitude,
-            "longitude": self.longitude,
-            "owner_id": self.owner.id if self.owner else None,
-            "created_at": self.created_at.isoformat(),
-            "updated_at": self.updated_at.isoformat(),
-            "reviews": [r.id for r in self.reviews],
-            "amenities": [a.id for a in self.amenities],
-        }
+    def put(self, place_id):
+        """Update place"""
+        data = ns.payload
+        place = facade.update_place(place_id, data)
+        if not place:
+            return {"error": "Place not found"}, 404
+        return place.to_dict(), 200

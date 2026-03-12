@@ -1,0 +1,26 @@
+import uuid
+from datetime import datetime
+
+class ValidationError(ValueError):
+    pass
+
+class BaseModel:
+    def __init__(self):
+        self.id = str(uuid.uuid4())
+        self.created_at = datetime.now()
+        self.updated_at = datetime.now()
+
+    def save(self):
+        self.updated_at = datetime.now()
+
+    def validate(self):
+        return True
+
+    def update(self, data: dict):
+        for key, value in data.items():
+            if key in ("id", "created_at"):
+                continue
+            if hasattr(self, key):
+                setattr(self, key, value)
+        self.validate()
+        self.save()

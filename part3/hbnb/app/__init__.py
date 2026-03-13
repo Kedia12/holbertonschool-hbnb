@@ -1,7 +1,7 @@
 from flask import Flask
 from flask_restx import Api
 
-from app.extensions import bcrypt, jwt
+from app.extensions import bcrypt, jwt, db
 
 # Namespaces (your files use ns in places/users/reviews, and api in auth)
 from app.api.v1.users import ns as users_ns
@@ -23,6 +23,7 @@ def create_app(config_class="config.DevelopmentConfig"):
     # init extensions
     bcrypt.init_app(app)
     jwt.init_app(app)
+    db.init_app(app)
 
     # API (same style as part2)
     api = Api(

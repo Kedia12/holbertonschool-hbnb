@@ -1,5 +1,5 @@
 from flask_restx import Namespace, Resource, fields
-from flask_jwt_extended import jwt_required, get_jwt_identity
+from flask_jwt_extended import jwt_required, get_jwt_identity, get_jwt
 from app.services import facade_instance as facade
 
 ns = Namespace("places", description="Place operations")
@@ -34,7 +34,7 @@ class PlaceList(Resource):
         current_user = get_jwt_identity()
 
         data = ns.payload
-        data["owner_id"] = current_user  # force owner to logged-in user
+        data["owner_id"] = current_user
 
         place = facade.create_place(data)
         return {
@@ -65,15 +65,18 @@ class PlaceResource(Resource):
             "owner_id": place.owner_id,
         }, 200
 
-    # AUTH REQUIRED + ownership check
     @jwt_required()
     @ns.expect(place_model, validate=True)
     def put(self, place_id):
         current_user = get_jwt_identity()
+        claims = get_jwt() or {}
+        is_admin = claims.get("is_admin", False)
+
         place = facade.get_place(place_id)
         if not place:
             return {"error": "Place not found"}, 404
-        if place.owner_id != current_user:
+
+        if not is_admin and place.owner_id != current_user:
             return {"error": "Unauthorized action"}, 403
 
         updated = facade.update_place(place_id, ns.payload)

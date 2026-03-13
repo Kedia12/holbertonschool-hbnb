@@ -2,13 +2,16 @@ from app.persistence.repository import InMemoryRepository
 from app.models.user import User
 from app.models.place import Place
 from app.models.review import Review
+from app.models.amenity import Amenity
 
 class HBnBFacade:
     def __init__(self):
         self.user_repo = InMemoryRepository()
         self.place_repo = InMemoryRepository()
         self.review_repo = InMemoryRepository()
+        self.amenity_repo = InMemoryRepository()
 
+    # -------- Users --------
     def create_user(self, user_data: dict) -> User:
         user = User(**user_data)  # hashes password in model
         self.user_repo.add(user)
@@ -23,7 +26,23 @@ class HBnBFacade:
     def list_users(self):
         return self.user_repo.get_all()
 
-            # -------- Places --------
+    def update_user(self, user_id: str, data: dict):
+        user = self.get_user(user_id)
+        if not user:
+            return None
+
+        if "first_name" in data:
+            user.first_name = data["first_name"]
+        if "last_name" in data:
+            user.last_name = data["last_name"]
+        if "email" in data:
+            user.email = data["email"]
+        if "password" in data:
+            user.hash_password(data["password"])
+
+        return user
+
+    # -------- Places --------
     def create_place(self, place_data: dict) -> Place:
         place = Place(**place_data)
         self.place_repo.add(place)
@@ -69,5 +88,30 @@ class HBnBFacade:
         return self.review_repo.get_all()
 
     def find_review_by_user_and_place(self, user_id: str, place_id: str):
-        return next((r for r in self.review_repo.get_all()
-                     if r.user_id == user_id and r.place_id == place_id), None)
+        return next(
+            (r for r in self.review_repo.get_all()
+             if r.user_id == user_id and r.place_id == place_id),
+            None
+        )
+
+    # -------- Amenities --------
+    def create_amenity(self, amenity_data: dict) -> Amenity:
+        amenity = Amenity(**amenity_data)
+        self.amenity_repo.add(amenity)
+        return amenity
+
+    def get_amenity(self, amenity_id: str):
+        return self.amenity_repo.get(amenity_id)
+
+    def get_all_amenities(self):
+        return self.amenity_repo.get_all()
+
+    def list_amenities(self):
+        return self.amenity_repo.get_all()
+
+    def update_amenity(self, amenity_id: str, data: dict):
+        amenity = self.get_amenity(amenity_id)
+        if not amenity:
+            return None
+        amenity.update(data)
+        return amenity

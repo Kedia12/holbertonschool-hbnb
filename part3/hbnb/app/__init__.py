@@ -8,6 +8,7 @@ from app.api.v1.users import ns as users_ns
 from app.api.v1.places import ns as places_ns
 from app.api.v1.reviews import ns as reviews_ns
 from app.api.v1.auth import api as auth_ns  # <-- IMPORTANT: your auth.py uses "api="
+from app.api.v1.amenities import ns as amenities_ns  # <-- NEW: add amenities namespace
 
 def create_app(config_class="config.DevelopmentConfig"):
     app = Flask(__name__)
@@ -38,5 +39,6 @@ def create_app(config_class="config.DevelopmentConfig"):
     api.add_namespace(places_ns)
     api.add_namespace(reviews_ns)
     api.add_namespace(auth_ns)
+    api.add_namespace(amenities_ns)
 
     return app

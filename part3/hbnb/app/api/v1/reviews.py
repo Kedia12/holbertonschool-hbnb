@@ -1,5 +1,5 @@
 from flask_restx import Namespace, Resource, fields
-from flask_jwt_extended import jwt_required, get_jwt_identity
+from flask_jwt_extended import jwt_required, get_jwt_identity, get_jwt
 from app.services import facade_instance as facade
 
 ns = Namespace("reviews", description="Review operations")
@@ -28,11 +28,9 @@ class ReviewList(Resource):
         if not place:
             return {"error": "Place not found"}, 404
 
-        # cannot review own place
         if place.owner_id == current_user:
             return {"error": "You cannot review your own place"}, 400
 
-        # cannot review same place twice
         existing = facade.find_review_by_user_and_place(current_user, place_id)
         if existing:
             return {"error": "You have already reviewed this place"}, 400
@@ -59,10 +57,14 @@ class ReviewResource(Resource):
     @ns.expect(update_review_model, validate=True)
     def put(self, review_id):
         current_user = get_jwt_identity()
+        claims = get_jwt() or {}
+        is_admin = claims.get("is_admin", False)
+
         review = facade.get_review(review_id)
         if not review:
             return {"error": "Review not found"}, 404
-        if review.user_id != current_user:
+
+        if not is_admin and review.user_id != current_user:
             return {"error": "Unauthorized action"}, 403
 
         updated = facade.update_review(review_id, ns.payload)
@@ -77,10 +79,14 @@ class ReviewResource(Resource):
     @jwt_required()
     def delete(self, review_id):
         current_user = get_jwt_identity()
+        claims = get_jwt() or {}
+        is_admin = claims.get("is_admin", False)
+
         review = facade.get_review(review_id)
         if not review:
             return {"error": "Review not found"}, 404
-        if review.user_id != current_user:
+
+        if not is_admin and review.user_id != current_user:
             return {"error": "Unauthorized action"}, 403
 
         facade.delete_review(review_id)

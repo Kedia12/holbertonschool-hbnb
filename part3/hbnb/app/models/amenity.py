@@ -1,19 +1,12 @@
-#!/usr/bin/python3
-"""Amenity model for Part 3 (in-memory version, before SQLAlchemy)."""
-
-from app.models.base_model import BaseModel
-
+from app.extensions import db
+from app.models.base_model import BaseModel, ValidationError
 
 class Amenity(BaseModel):
-    """Represents an amenity (e.g., Wi-Fi, Pool)."""
+    __tablename__ = "amenities"
 
-    def __init__(self, name: str, **kwargs):
-        super().__init__(**kwargs)
+    name = db.Column(db.String(100), nullable=False, unique=True)
+
+    def __init__(self, name):
+        if not name:
+            raise ValidationError("name is required")
         self.name = name
-
-    def update(self, data: dict):
-        """Update mutable fields."""
-        if not data:
-            return
-        if "name" in data and data["name"] is not None:
-            self.name = data["name"]

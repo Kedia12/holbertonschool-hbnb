@@ -1,30 +1,23 @@
+from app.extensions import db
 from app.models.base_model import BaseModel, ValidationError
 
 class Review(BaseModel):
-    def __init__(self, place_id: str, user_id: str, text: str, rating: int = 5):
-        super().__init__()
-        self.place_id = place_id
-        self.user_id = user_id
-        self.text = text
-        self.rating = rating
+    __tablename__ = "reviews"
 
-        self.validate()
+    text = db.Column(db.String(255), nullable=False)
+    rating = db.Column(db.Integer, nullable=False, default=5)
 
-    def validate(self):
-        if not self.place_id:
-            raise ValidationError("place_id is required")
-        if not self.user_id:
-            raise ValidationError("user_id is required")
-        if not self.text or not isinstance(self.text, str):
+    # No relationships yet; keep plain ids
+    user_id = db.Column(db.String(36), nullable=True)
+    place_id = db.Column(db.String(36), nullable=True)
+
+    def __init__(self, text, rating=5, user_id=None, place_id=None):
+        if not text:
             raise ValidationError("text is required")
-
-        try:
-            rating = int(self.rating)
-        except Exception:
-            raise ValidationError("rating must be an integer")
-
-        if rating < 1 or rating > 5:
+        if rating is None or not (1 <= int(rating) <= 5):
             raise ValidationError("rating must be between 1 and 5")
 
-        self.rating = rating
-        return True
+        self.text = text
+        self.rating = int(rating)
+        self.user_id = user_id
+        self.place_id = place_id

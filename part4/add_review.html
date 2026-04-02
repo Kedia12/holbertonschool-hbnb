@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>HBnB - Add Review</title>
+  <link rel="icon" href="assets/icon.png" type="image/png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="site-header">
+    <div class="header-content">
+      <img src="assets/logo.png" alt="HBnB logo" class="logo">
+      <div class="brand">
+        <h1>HBnB Explorer</h1>
+        <p>Share your experience</p>
+      </div>
+      <nav class="main-nav" aria-label="Main navigation">
+        <a href="index.html">Places</a>
+        <a href="place.html">Place Details</a>
+        <a href="add_review.html" aria-current="page">Add Review</a>
+      </nav>
+      <a href="login.html" class="login-button" id="login-link">Login</a>
+      <button type="button" class="secondary-button is-hidden" id="logout-button">Logout</button>
+    </div>
+  </header>
+
+  <main>
+    <section class="page-intro">
+      <h2>Add Review Form</h2>
+      <p>This page is intended for authenticated users to post feedback.</p>
+      <p class="page-message" id="review-message" aria-live="polite"></p>
+    </section>
+
+    <section class="add-review" aria-label="Add review">
+      <form action="#" method="post" class="form" id="review-form">
+        <input type="hidden" id="place-id" name="place_id">
+        <div class="field">
+          <p class="review-target" id="selected-place-name">Loading place details...</p>
+        </div>
+
+        <div class="field">
+          <label for="place-select">Place</label>
+          <select id="place-select" name="place_select" required>
+            <option value="">Select a place</option>
+          </select>
+        </div>
+
+        <div class="field">
+          <label for="rating">Rating</label>
+          <select id="rating" name="rating" required>
+            <option value="">Select rating</option>
+            <option value="5">5 - Excellent</option>
+            <option value="4">4 - Very Good</option>
+            <option value="3">3 - Good</option>
+            <option value="2">2 - Fair</option>
+            <option value="1">1 - Poor</option>
+          </select>
+        </div>
+
+        <div class="field">
+          <label for="comment">Comment</label>
+          <textarea id="comment" name="comment" placeholder="Tell future guests what stood out to you" required></textarea>
+        </div>
+
+        <div class="form-actions">
+          <button type="submit" class="primary-button">Submit Review</button>
+          <a href="place.html" class="secondary-button">Cancel</a>
+        </div>
+      </form>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <p>All rights reserved.</p>
+  </footer>
+
+  <script src="scripts.js"></script>
+</body>
+</html>

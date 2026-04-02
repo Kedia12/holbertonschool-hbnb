@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>HBnB - List of Places</title>
+  <link rel="icon" href="assets/icon.png" type="image/png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="site-header">
+    <div class="header-content">
+      <img src="assets/logo.png" alt="HBnB logo" class="logo">
+      <div class="brand">
+        <h1>HBnB Explorer</h1>
+        <p>Find your next memorable stay</p>
+      </div>
+      <nav class="main-nav" aria-label="Main navigation">
+        <a href="index.html" aria-current="page">Places</a>
+        <a href="place.html">Place Details</a>
+        <a href="add_review.html">Add Review</a>
+      </nav>
+      <a href="login.html" class="login-button" id="login-link">Login</a>
+      <button type="button" class="secondary-button is-hidden" id="logout-button">Logout</button>
+    </div>
+  </header>
+
+  <main>
+    <section class="page-intro">
+      <h2>Featured Places</h2>
+      <p>Browse hand-picked listings with transparent nightly pricing.</p>
+      <div class="filter-bar">
+        <label for="price-filter">Filter by max price</label>
+        <select id="price-filter" name="price-filter">
+          <option value="all">All</option>
+          <option value="10">10</option>
+          <option value="50">50</option>
+          <option value="100">100</option>
+        </select>
+      </div>
+    </section>
+
+    <section class="card-grid" aria-label="Places list" id="places-list">
+      <p class="page-message" id="places-message"></p>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <p>All rights reserved.</p>
+  </footer>
+
+  <script src="scripts.js"></script>
+</body>
+</html>

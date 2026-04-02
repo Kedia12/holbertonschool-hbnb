@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>HBnB - Login</title>
+  <link rel="icon" href="assets/icon.png" type="image/png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="site-header">
+    <div class="header-content">
+      <img src="assets/logo.png" alt="HBnB logo" class="logo">
+      <div class="brand">
+        <h1>HBnB Explorer</h1>
+        <p>Sign in to manage your trips</p>
+      </div>
+      <nav class="main-nav" aria-label="Main navigation">
+        <a href="index.html">Places</a>
+        <a href="place.html">Place Details</a>
+        <a href="add_review.html">Add Review</a>
+      </nav>
+      <a href="login.html" class="login-button" id="login-link" aria-current="page">Login</a>
+      <button type="button" class="secondary-button is-hidden" id="logout-button">Logout</button>
+    </div>
+  </header>
+
+  <main>
+    <section class="page-intro">
+      <h2>Login Form</h2>
+      <p>Use your account credentials to continue.</p>
+    </section>
+
+    <section class="form" aria-label="Login form">
+      <p class="page-message" id="login-message" aria-live="polite"></p>
+      <form action="#" method="post" id="login-form">
+        <div class="field">
+          <label for="email">Email</label>
+          <input type="email" id="email" name="email" autocomplete="email" required>
+        </div>
+
+        <div class="field">
+          <label for="password">Password</label>
+          <input type="password" id="password" name="password" autocomplete="current-password" required>
+        </div>
+
+        <div class="form-actions">
+          <button type="submit" class="primary-button">Sign In</button>
+          <a href="index.html" class="secondary-button">Back to Places</a>
+        </div>
+      </form>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <p>All rights reserved.</p>
+  </footer>
+
+  <script src="scripts.js"></script>
+</body>
+</html>

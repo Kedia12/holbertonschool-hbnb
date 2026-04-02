@@ -1,0 +1,334 @@
+:root {
+  --bg: #f5f2ea;
+  --surface: #fffdf7;
+  --surface-strong: #ffffff;
+  --text: #22201d;
+  --muted: #6f685f;
+  --border: #ddd;
+  --accent: #005f73;
+  --accent-strong: #0a9396;
+  --highlight: #ee9b00;
+  --danger: #bb3e03;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: "Nunito", "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  color: var(--text);
+  background:
+    radial-gradient(circle at 15% 10%, rgba(238, 155, 0, 0.18), transparent 30%),
+    radial-gradient(circle at 85% 5%, rgba(10, 147, 150, 0.18), transparent 30%),
+    var(--bg);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.site-header {
+  background: linear-gradient(135deg, var(--accent), var(--accent-strong));
+  color: #ffffff;
+  padding: 14px 20px;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+}
+
+.header-content {
+  max-width: 1100px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.logo {
+  width: 48px;
+  height: 48px;
+  object-fit: cover;
+  border-radius: 50%;
+  border: 2px solid rgba(255, 255, 255, 0.4);
+  background-color: #ffffff;
+}
+
+.brand {
+  margin-right: auto;
+}
+
+.brand h1 {
+  margin: 0;
+  font-size: 1.2rem;
+}
+
+.brand p {
+  margin: 2px 0 0;
+  font-size: 0.88rem;
+  opacity: 0.88;
+}
+
+.main-nav {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.main-nav a,
+.login-button,
+.details-button,
+.primary-button,
+.secondary-button {
+  text-decoration: none;
+  border: 0;
+  border-radius: 999px;
+  padding: 10px 16px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease;
+}
+
+.main-nav a {
+  color: #ffffff;
+  background: rgba(255, 255, 255, 0.2);
+}
+
+.main-nav a:hover,
+.main-nav a:focus-visible {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.25);
+}
+
+.login-button {
+  background: var(--highlight);
+  color: #1f1f1f;
+}
+
+.login-button:hover,
+.login-button:focus-visible,
+.details-button:hover,
+.details-button:focus-visible,
+.primary-button:hover,
+.primary-button:focus-visible,
+.secondary-button:hover,
+.secondary-button:focus-visible {
+  transform: translateY(-1px);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+}
+
+main {
+  width: min(1100px, 92%);
+  margin: 24px auto 40px;
+}
+
+.page-intro h2 {
+  margin: 0 0 8px;
+  font-size: clamp(1.5rem, 2.7vw, 2.3rem);
+}
+
+.page-intro p {
+  margin: 0;
+  color: var(--muted);
+}
+
+.card-grid {
+  margin-top: 22px;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 14px;
+}
+
+.place-card,
+.review-card,
+.place-details,
+.form {
+  margin: 20px;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 10px;
+  background: var(--surface-strong);
+}
+
+.page-message {
+  min-height: 1.25rem;
+  margin: 8px 0 0;
+  font-weight: 700;
+}
+
+.page-message.error {
+  color: var(--danger);
+}
+
+.page-message.success {
+  color: var(--accent-strong);
+}
+
+.review-target {
+  margin: 0;
+  font-weight: 700;
+}
+
+.filter-bar {
+  margin-top: 16px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.filter-bar label {
+  font-weight: 700;
+}
+
+.filter-bar select {
+  min-width: 160px;
+}
+
+.is-hidden {
+  display: none !important;
+}
+
+.place-card {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.07);
+}
+
+.place-card h3 {
+  margin: 0;
+}
+
+.price {
+  font-weight: 700;
+  color: var(--danger);
+}
+
+.details-button,
+.primary-button {
+  background: var(--accent);
+  color: #ffffff;
+  text-align: center;
+}
+
+.place-details {
+  background: var(--surface);
+}
+
+.place-info {
+  margin: 12px 0;
+  padding: 12px;
+  border-left: 4px solid var(--accent-strong);
+  background: rgba(10, 147, 150, 0.06);
+  border-radius: 8px;
+}
+
+.place-info h3,
+.place-info h4,
+.place-info p,
+.place-info ul {
+  margin-top: 0;
+}
+
+.place-info ul {
+  padding-left: 20px;
+  margin-bottom: 0;
+}
+
+.review-list {
+  display: grid;
+  gap: 10px;
+}
+
+.review-card p {
+  margin: 0 0 8px;
+}
+
+.review-meta {
+  color: var(--muted);
+  font-size: 0.95rem;
+}
+
+.add-review {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 10px;
+}
+
+.form {
+  max-width: 520px;
+  background: var(--surface);
+}
+
+.form label {
+  display: block;
+  margin-bottom: 6px;
+  font-weight: 700;
+}
+
+.form .field {
+  margin-bottom: 14px;
+}
+
+.form input,
+.form textarea,
+.form select {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #cfc6bc;
+  border-radius: 8px;
+  font: inherit;
+  background: #ffffff;
+}
+
+.form textarea {
+  resize: vertical;
+  min-height: 110px;
+}
+
+.form-actions {
+  display: flex;
+  gap: 10px;
+}
+
+.secondary-button {
+  background: #e8e0d6;
+  color: var(--text);
+}
+
+.site-footer {
+  margin-top: auto;
+  padding: 14px 20px;
+  text-align: center;
+  background: #1f2933;
+  color: #f8fafc;
+  font-size: 0.92rem;
+}
+
+@media (max-width: 720px) {
+  .header-content {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .brand {
+    margin-right: 0;
+  }
+
+  .main-nav {
+    width: 100%;
+  }
+
+  .place-card,
+  .review-card,
+  .place-details,
+  .form {
+    margin: 12px 0;
+  }
+
+  .form {
+    max-width: none;
+  }
+}

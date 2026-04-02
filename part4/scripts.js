@@ -169,7 +169,18 @@ function fullName(person) {
 }
 
 function renderHeaderState() {
-    setActiveAuthAction();
+    const loginLink = document.getElementById("login-link");
+    if (!loginLink) {
+        return;
+    }
+
+    if (isAuthenticated()) {
+        loginLink.style.display = "none";
+    } else {
+        loginLink.style.display = "inline-flex";
+        loginLink.textContent = "Login";
+        loginLink.setAttribute("href", "login.html");
+    }
 }
 
 function setStatus(container, message, tone = "info") {
@@ -189,14 +200,9 @@ function createEmptyState(message) {
 }
 
 async function loadPlacesPage() {
-    if (!requireAuth()) {
-        return;
-    }
-
     const container = document.querySelector("[data-places-list]");
-    const filter = document.querySelector("[data-country-filter]");
+    const filter = document.querySelector("[data-price-filter]");
     const status = document.querySelector("[data-status]");
-    const searchInput = document.querySelector("[data-search-input]");
     if (!container) {
         return;
     }
@@ -205,27 +211,16 @@ async function loadPlacesPage() {
     setStatus(status, "Loading available places...");
 
     try {
-        const places = await apiFetch("/places/");
-        const normalizedPlaces = places.map((place) => ({
-            ...place,
-            region: getRegion(place),
-        }));
-
-        const regions = Array.from(new Set(normalizedPlaces.map((place) => place.region))).sort((left, right) => left.localeCompare(right));
-        if (filter) {
-            filter.innerHTML = [
-                '<option value="all">All countries / regions</option>',
-                ...regions.map((region) => `<option value="${escapeHtml(region)}">${escapeHtml(region)}</option>`),
-            ].join("");
-        }
+        const places = await fetchPlaces();
 
         const render = () => {
-            const activeRegion = filter?.value || "all";
-            const searchTerm = searchInput?.value.trim().toLowerCase() || "";
-            const filtered = normalizedPlaces.filter((place) => {
-                const matchesRegion = activeRegion === "all" || place.region === activeRegion;
-                const matchesSearch = !searchTerm || [place.title, place.description, place.region].filter(Boolean).some((value) => String(value).toLowerCase().includes(searchTerm));
-                return matchesRegion && matchesSearch;
+            const maxPrice = filter?.value || "all";
+            const filtered = places.filter((place) => {
+                if (maxPrice === "all") {
+                    return true;
+                }
+
+                return Number(place.price) <= Number(maxPrice);
             });
 
             container.innerHTML = "";
@@ -240,7 +235,6 @@ async function loadPlacesPage() {
                 card.className = "place-card";
                 card.innerHTML = `
                     <div class="card-meta">
-                        <span class="pill">${escapeHtml(place.region)}</span>
                         <span class="pill">${escapeHtml(formatPrice(place.price))}</span>
                     </div>
                     <h3>${escapeHtml(place.title)}</h3>
@@ -255,14 +249,17 @@ async function loadPlacesPage() {
         };
 
         filter?.addEventListener("change", render);
-        searchInput?.addEventListener("input", render);
         render();
-        setStatus(status, `${normalizedPlaces.length} places available.`, "info");
+        setStatus(status, `${places.length} places available.`, "info");
     } catch (error) {
         setStatus(status, error.message, "error");
         container.innerHTML = "";
         container.appendChild(createEmptyState("Unable to load places right now."));
     }
+}
+
+async function fetchPlaces() {
+    return apiFetch("/places/");
 }
 
 function renderReviewCard(review, reviewerName) {
@@ -280,10 +277,12 @@ function renderReviewCard(review, reviewerName) {
 
 async function loadPlaceDetailsPage() {
     const placeId = getQueryParam("place_id") || document.body?.dataset?.placeId;
-    const container = document.querySelector("[data-place-details]");
+    const container = document.getElementById("place-details") || document.querySelector("[data-place-details]");
     const reviewsContainer = document.querySelector("[data-reviews-list]");
     const reviewStatus = document.querySelector("[data-review-status]");
-    const reviewAction = document.querySelector("[data-review-action]");
+    const reviewSection = document.getElementById("add-review-section");
+    const reviewForm = document.getElementById("add-review-form") || document.querySelector("[data-review-form]");
+    const placeIdInput = document.querySelector("[data-place-id-input]");
     const pageStatus = document.querySelector("[data-place-status]");
 
     if (!placeId || !container) {
@@ -328,9 +327,46 @@ async function loadPlaceDetailsPage() {
             </div>
         `;
 
-        if (reviewAction && isAuthenticated()) {
-            reviewAction.href = `add_review.html?place_id=${encodeURIComponent(place.id)}`;
-            reviewAction.textContent = "Add Review";
+        if (reviewSection) {
+            reviewSection.style.display = isAuthenticated() ? "block" : "none";
+        }
+
+        if (reviewForm) {
+            reviewForm.style.display = isAuthenticated() ? "grid" : "none";
+        }
+
+        if (placeIdInput) {
+            placeIdInput.value = place.id;
+        }
+
+        if (isAuthenticated() && reviewForm && !reviewForm.dataset.bound) {
+            reviewForm.dataset.bound = "true";
+            reviewForm.addEventListener("submit", async (event) => {
+                event.preventDefault();
+
+                const formData = new FormData(reviewForm);
+                const payload = {
+                    place_id: String(formData.get("place_id") || place.id).trim(),
+                    text: String(formData.get("text") || "").trim(),
+                    rating: Number(formData.get("rating") || 5),
+                };
+
+                if (!payload.text) {
+                    setStatus(reviewStatus, "Please write a review comment.", "error");
+                    return;
+                }
+
+                try {
+                    await apiFetch("/reviews/", {
+                        method: "POST",
+                        body: payload,
+                    });
+                    setStatus(reviewStatus, "Review added successfully.", "info");
+                    window.location.href = `place.html?place_id=${encodeURIComponent(place.id)}`;
+                } catch (error) {
+                    setStatus(reviewStatus, error.message, "error");
+                }
+            });
         }
 
         if (reviewsContainer) {
@@ -418,13 +454,15 @@ async function handleLoginPage() {
 }
 
 async function handleAddReviewPage() {
-    if (!requireAuth("index.html")) {
+    const token = getToken();
+    if (!token) {
+        window.location.href = "index.html";
         return;
     }
 
-    const form = document.querySelector("[data-review-form]");
-    const status = document.querySelector("[data-review-status]");
-    const placeIdInput = document.querySelector("[data-place-id-input]");
+    const form = document.getElementById("review-form") || document.querySelector("[data-review-form]");
+    const status = document.getElementById("review-status") || document.querySelector("[data-review-status]");
+    const placeIdInput = document.getElementById("review-place-id") || document.querySelector("[data-place-id-input]");
     const placeTitle = document.querySelector("[data-place-title]");
     const placeSummary = document.querySelector("[data-place-summary]");
     const placeId = getQueryParam("place_id") || "";
@@ -473,8 +511,11 @@ async function handleAddReviewPage() {
                 method: "POST",
                 body: payload,
             });
-            setStatus(status, "Review added successfully. Redirecting...", "info");
-            window.location.href = `place.html?place_id=${encodeURIComponent(payload.place_id)}`;
+            form.reset();
+            if (placeIdInput) {
+                placeIdInput.value = payload.place_id;
+            }
+            setStatus(status, "Review added successfully!", "info");
         } catch (error) {
             setStatus(status, error.message, "error");
         }

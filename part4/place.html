@@ -38,19 +38,49 @@
                 </div>
                 <div class="status" data-place-status>Loading place details...</div>
             </div>
-            <div class="place-details" data-place-details></div>
+            <div class="place-details" id="place-details" data-place-details></div>
+        </section>
+
+        <section class="section-card" id="add-review-section">
+            <div class="section-head">
+                <div>
+                    <h2 class="section-title">Add review</h2>
+                    <p class="section-description">This form is only visible to authenticated users.</p>
+                </div>
+            </div>
+            <div class="status" data-review-status>Please sign in to add a review.</div>
+            <form class="form-grid add-review" id="add-review-form" data-review-form novalidate>
+                <input type="hidden" name="place_id" id="review-place-id" data-place-id-input>
+                <div class="form-field">
+                    <label for="review-text">Comment</label>
+                    <textarea id="review-text" name="text" maxlength="500" placeholder="Write your experience here"></textarea>
+                </div>
+                <div class="form-field">
+                    <label for="review-rating">Rating</label>
+                    <select id="review-rating" name="rating">
+                        <option value="5">5 - Excellent</option>
+                        <option value="4">4 - Very good</option>
+                        <option value="3">3 - Good</option>
+                        <option value="2">2 - Fair</option>
+                        <option value="1">1 - Poor</option>
+                    </select>
+                </div>
+                <div class="form-actions">
+                    <button class="submit-button" type="submit">Submit review</button>
+                    <a class="secondary-button" href="add_review.html">Open full form</a>
+                </div>
+            </form>
         </section>
 
         <section class="section-card">
             <div class="section-head">
                 <div>
-                    <h2 class="section-title">Review section</h2>
-                    <p class="section-description">Authenticated users can jump directly to the add-review form.</p>
+                    <h2 class="section-title">Reviews</h2>
+                    <p class="section-description">All reviews for the selected place appear below.</p>
                 </div>
-                <a class="primary-button" data-review-action href="add_review.html">Add Review</a>
             </div>
             <div class="status" data-review-status></div>
-            <div class="review-list" data-reviews-list></div>
+            <div class="review-list" id="reviews-list" data-reviews-list></div>
         </section>
     </main>
 

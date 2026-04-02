@@ -37,9 +37,9 @@
                 <h2 data-place-title>Selecting place...</h2>
                 <p class="muted" data-place-summary>Place summary will appear here after the page loads.</p>
             </div>
-            <div class="status" data-review-status>Preparing the review form...</div>
-            <form class="form-grid" data-review-form novalidate>
-                <input type="hidden" name="place_id" data-place-id-input>
+            <div class="status" id="review-status" data-review-status>Preparing the review form...</div>
+            <form class="form-grid" id="review-form" data-review-form novalidate>
+                <input type="hidden" name="place_id" id="review-place-id" data-place-id-input>
                 <div class="form-field">
                     <label for="text">Comment</label>
                     <textarea id="text" name="text" required maxlength="500" placeholder="Write your experience here"></textarea>

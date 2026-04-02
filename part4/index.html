@@ -22,9 +22,8 @@
             <div class="header-actions">
                 <nav class="nav-links" aria-label="Primary navigation">
                     <a class="nav-link" href="index.html">Places</a>
-                    <a class="nav-link" href="login.html">Login</a>
                 </nav>
-                <a class="login-button" data-auth-action href="login.html">Login</a>
+                <a class="login-button" id="login-link" data-auth-action href="login.html">Login</a>
             </div>
         </div>
     </header>
@@ -52,26 +51,25 @@
             <div class="section-head">
                 <div>
                     <h2 class="section-title">Available places</h2>
-                    <p class="section-description">Filter the catalog before opening a place detail page.</p>
+                    <p class="section-description">Filter the catalog by price before opening a place detail page.</p>
                 </div>
                 <div class="status" data-status>Loading places...</div>
             </div>
             <div class="controls">
                 <div class="field">
-                    <label for="search">Search places</label>
-                    <input id="search" data-search-input type="search" placeholder="Search by title, description, or region">
-                </div>
-                <div class="field">
-                    <label for="country-filter">Country / region</label>
-                    <select id="country-filter" data-country-filter>
-                        <option value="all">All countries / regions</option>
+                    <label for="price-filter">Price filter</label>
+                    <select id="price-filter" data-price-filter>
+                        <option value="all">All</option>
+                        <option value="10">10</option>
+                        <option value="50">50</option>
+                        <option value="100">100</option>
                     </select>
                 </div>
                 <div class="field">
                     <a class="primary-button" href="login.html">Manage session</a>
                 </div>
             </div>
-            <div class="cards-grid" data-places-list></div>
+            <div class="cards-grid" id="places-list" data-places-list></div>
         </section>
     </main>
 

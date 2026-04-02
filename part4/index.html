@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HBnB | Places</title>
+    <meta name="description" content="Browse available HBnB places and open detailed listings.">
+    <link rel="icon" href="assets/icon.png">
+    <link rel="stylesheet" href="styles.css">
+    <script defer src="scripts.js"></script>
+</head>
+<body data-page="index">
+    <header class="site-header">
+        <div class="page-shell">
+            <a class="brand" href="index.html" aria-label="HBnB home">
+                <img class="logo" src="assets/logo.png" alt="HBnB logo">
+                <span class="brand-copy">
+                    <strong>HBnB</strong>
+                    <span>Simple web client</span>
+                </span>
+            </a>
+            <div class="header-actions">
+                <nav class="nav-links" aria-label="Primary navigation">
+                    <a class="nav-link" href="index.html">Places</a>
+                    <a class="nav-link" href="login.html">Login</a>
+                </nav>
+                <a class="login-button" data-auth-action href="login.html">Login</a>
+            </div>
+        </div>
+    </header>
+
+    <main class="page-shell">
+        <section class="hero">
+            <div class="hero-grid">
+                <div class="hero-copy">
+                    <h1>Find your next stay without reloading the page.</h1>
+                    <p>Browse all available places, refine the list by region, and jump into a detailed view with reviews and host information.</p>
+                    <div class="hero-badges">
+                        <span class="badge">Fast client-side filtering</span>
+                        <span class="badge">JWT cookie session</span>
+                        <span class="badge">Fetch-powered API access</span>
+                    </div>
+                </div>
+                <aside class="hero-panel">
+                    <h3>Authenticated browsing</h3>
+                    <p>This page is protected. If you are not signed in, you will be redirected to the login form automatically.</p>
+                </aside>
+            </div>
+        </section>
+
+        <section class="section-card">
+            <div class="section-head">
+                <div>
+                    <h2 class="section-title">Available places</h2>
+                    <p class="section-description">Filter the catalog before opening a place detail page.</p>
+                </div>
+                <div class="status" data-status>Loading places...</div>
+            </div>
+            <div class="controls">
+                <div class="field">
+                    <label for="search">Search places</label>
+                    <input id="search" data-search-input type="search" placeholder="Search by title, description, or region">
+                </div>
+                <div class="field">
+                    <label for="country-filter">Country / region</label>
+                    <select id="country-filter" data-country-filter>
+                        <option value="all">All countries / regions</option>
+                    </select>
+                </div>
+                <div class="field">
+                    <a class="primary-button" href="login.html">Manage session</a>
+                </div>
+            </div>
+            <div class="cards-grid" data-places-list></div>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <p>HBnB Evolution. All rights reserved.</p>
+    </footer>
+</body>
+</html>

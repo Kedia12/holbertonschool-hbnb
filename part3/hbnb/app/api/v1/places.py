@@ -12,20 +12,51 @@ place_model = ns.model("Place", {
     "longitude": fields.Float(required=True),
 })
 
+
+def _serialize_place(place, include_details=False):
+    payload = {
+        "id": place.id,
+        "title": place.title,
+        "description": place.description,
+        "price": place.price,
+        "latitude": place.latitude,
+        "longitude": place.longitude,
+        "owner_id": place.owner_id,
+    }
+
+    if include_details:
+        payload["host"] = {
+            "id": place.owner.id if place.owner else place.owner_id,
+            "first_name": place.owner.first_name if place.owner else None,
+            "last_name": place.owner.last_name if place.owner else None,
+            "email": place.owner.email if place.owner else None,
+        }
+        payload["amenities"] = [{
+            "id": amenity.id,
+            "name": amenity.name,
+        } for amenity in place.amenities]
+        payload["reviews"] = [{
+            "id": review.id,
+            "place_id": review.place_id,
+            "user_id": review.user_id,
+            "text": review.text,
+            "rating": review.rating,
+            "user": {
+                "id": review.author.id if review.author else review.user_id,
+                "first_name": review.author.first_name if review.author else None,
+                "last_name": review.author.last_name if review.author else None,
+                "email": review.author.email if review.author else None,
+            },
+        } for review in place.reviews]
+
+    return payload
+
 @ns.route("/")
 class PlaceList(Resource):
     # PUBLIC
     def get(self):
         places = facade.list_places()
-        return [{
-            "id": p.id,
-            "title": p.title,
-            "description": p.description,
-            "price": p.price,
-            "latitude": p.latitude,
-            "longitude": p.longitude,
-            "owner_id": p.owner_id,
-        } for p in places], 200
+        return [_serialize_place(place) for place in places], 200
 
     # AUTH REQUIRED
     @jwt_required()
@@ -37,15 +68,7 @@ class PlaceList(Resource):
         data["owner_id"] = current_user
 
         place = facade.create_place(data)
-        return {
-            "id": place.id,
-            "title": place.title,
-            "description": place.description,
-            "price": place.price,
-            "latitude": place.latitude,
-            "longitude": place.longitude,
-            "owner_id": place.owner_id,
-        }, 201
+        return _serialize_place(place), 201
 
 
 @ns.route("/<place_id>")
@@ -55,15 +78,7 @@ class PlaceResource(Resource):
         place = facade.get_place(place_id)
         if not place:
             return {"error": "Place not found"}, 404
-        return {
-            "id": place.id,
-            "title": place.title,
-            "description": place.description,
-            "price": place.price,
-            "latitude": place.latitude,
-            "longitude": place.longitude,
-            "owner_id": place.owner_id,
-        }, 200
+        return _serialize_place(place, include_details=True), 200
 
     @jwt_required()
     @ns.expect(place_model, validate=True)
@@ -80,12 +95,4 @@ class PlaceResource(Resource):
             return {"error": "Unauthorized action"}, 403
 
         updated = facade.update_place(place_id, ns.payload)
-        return {
-            "id": updated.id,
-            "title": updated.title,
-            "description": updated.description,
-            "price": updated.price,
-            "latitude": updated.latitude,
-            "longitude": updated.longitude,
-            "owner_id": updated.owner_id,
-        }, 200
+        return _serialize_place(updated), 200

@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HBnB | Place Details</title>
+    <meta name="description" content="Review a place in detail and inspect its reviews.">
+    <link rel="icon" href="assets/icon.png">
+    <link rel="stylesheet" href="styles.css">
+    <script defer src="scripts.js"></script>
+</head>
+<body data-page="place">
+    <header class="site-header">
+        <div class="page-shell">
+            <a class="brand" href="index.html" aria-label="HBnB home">
+                <img class="logo" src="assets/logo.png" alt="HBnB logo">
+                <span class="brand-copy">
+                    <strong>HBnB</strong>
+                    <span>Simple web client</span>
+                </span>
+            </a>
+            <div class="header-actions">
+                <nav class="nav-links" aria-label="Primary navigation">
+                    <a class="nav-link" href="index.html">Places</a>
+                    <a class="nav-link" href="login.html">Login</a>
+                </nav>
+                <a class="login-button" data-auth-action href="login.html">Login</a>
+            </div>
+        </div>
+    </header>
+
+    <main class="page-shell">
+        <section class="section-card">
+            <div class="section-head">
+                <div>
+                    <h1 class="section-title">Place details</h1>
+                    <p class="section-description">Open a place from the list and inspect its host, amenities, and reviews.</p>
+                </div>
+                <div class="status" data-place-status>Loading place details...</div>
+            </div>
+            <div class="place-details" data-place-details></div>
+        </section>
+
+        <section class="section-card">
+            <div class="section-head">
+                <div>
+                    <h2 class="section-title">Review section</h2>
+                    <p class="section-description">Authenticated users can jump directly to the add-review form.</p>
+                </div>
+                <a class="primary-button" data-review-action href="add_review.html">Add Review</a>
+            </div>
+            <div class="status" data-review-status></div>
+            <div class="review-list" data-reviews-list></div>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <p>HBnB Evolution. All rights reserved.</p>
+    </footer>
+</body>
+</html>

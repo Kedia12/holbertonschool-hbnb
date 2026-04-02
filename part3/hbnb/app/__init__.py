@@ -42,4 +42,11 @@ def create_app(config_class="config.DevelopmentConfig"):
     api.add_namespace(auth_ns)
     api.add_namespace(amenities_ns)
 
+    @app.after_request
+    def add_cors_headers(response):
+        response.headers["Access-Control-Allow-Origin"] = "*"
+        response.headers["Access-Control-Allow-Headers"] = "Authorization, Content-Type"
+        response.headers["Access-Control-Allow-Methods"] = "GET, POST, PUT, DELETE, OPTIONS"
+        return response
+
     return app

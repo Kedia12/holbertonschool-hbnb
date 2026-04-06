@@ -12,11 +12,17 @@ export const HomePage = () => {
   useEffect(() => {
     const fetchPlaces = async () => {
       setLoading(true);
+      setError(null);
       try {
         const response = await placeAPI.getAllPlaces();
         setPlaces(response.data);
       } catch (err) {
-        setError('Failed to fetch places');
+        const status = err.response?.status;
+        const apiMessage =
+          err.response?.data?.error ||
+          err.response?.data?.message ||
+          err.message;
+        setError(`Failed to fetch places${status ? ` (${status})` : ''}: ${apiMessage}`);
       } finally {
         setLoading(false);
       }

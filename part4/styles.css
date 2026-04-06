@@ -1,0 +1,289 @@
+/* Global layout */
+:root {
+  --bg: #f6f7fb;
+  --surface: #ffffff;
+  --text: #1f2937;
+  --muted: #6b7280;
+  --primary: #0f766e;
+  --primary-dark: #115e59;
+  --border: #ddd;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  color: var(--text);
+  background:
+    radial-gradient(circle at 10% 10%, #d1fae5 0%, transparent 35%),
+    radial-gradient(circle at 90% 0%, #ccfbf1 0%, transparent 30%),
+    var(--bg);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.container {
+  width: min(1100px, 92%);
+  margin: 0 auto;
+}
+
+header {
+  background: var(--surface);
+  border-bottom: 1px solid #e5e7eb;
+  position: sticky;
+  top: 0;
+  z-index: 5;
+}
+
+.header-inner {
+  min-height: 72px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  text-decoration: none;
+  color: inherit;
+}
+
+.logo {
+  width: 42px;
+  height: 42px;
+  border-radius: 8px;
+}
+
+nav ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+nav a,
+.login-button,
+.details-button,
+.button {
+  text-decoration: none;
+  border: 0;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font: inherit;
+  transition: transform 0.15s ease, background-color 0.2s ease;
+}
+
+nav a {
+  color: var(--text);
+  padding: 8px 12px;
+  border-radius: 8px;
+}
+
+nav a:hover,
+nav a:focus-visible {
+  background: #ecfeff;
+  outline: none;
+}
+
+.login-button,
+.details-button,
+.button {
+  background: var(--primary);
+  color: #fff;
+  border-radius: 8px;
+  padding: 10px 14px;
+}
+
+.login-button:hover,
+.details-button:hover,
+.button:hover,
+.login-button:focus-visible,
+.details-button:focus-visible,
+.button:focus-visible {
+  background: var(--primary-dark);
+  transform: translateY(-1px);
+  outline: none;
+}
+
+.button:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+  transform: none;
+}
+
+main {
+  flex: 1;
+  padding: 24px 0 40px;
+}
+
+h1,
+h2,
+h3 {
+  line-height: 1.2;
+}
+
+.page-title {
+  margin: 0 0 14px;
+}
+
+.muted {
+  color: var(--muted);
+}
+
+.filter-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 10px 0 16px;
+}
+
+.filter-row label {
+  margin: 0;
+}
+
+.filter-row select {
+  width: 140px;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 8px;
+}
+
+/* Task fixed design constraints */
+.place-card,
+.review-card {
+  margin: 20px;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 10px;
+  background: var(--surface);
+}
+
+.price {
+  font-weight: 700;
+  color: var(--primary-dark);
+}
+
+.place-details {
+  margin: 20px 0;
+  padding: 18px;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  background: var(--surface);
+}
+
+.place-info {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 16px;
+}
+
+.card {
+  background: var(--surface);
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  padding: 16px;
+}
+
+.add-review {
+  margin-top: 16px;
+}
+
+form,
+.form {
+  background: var(--surface);
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  padding: 18px;
+  max-width: 520px;
+}
+
+.form-group {
+  margin-bottom: 12px;
+}
+
+.error-message {
+  max-width: 520px;
+  margin: 0 0 12px;
+  padding: 10px 12px;
+  border: 1px solid #fecaca;
+  border-radius: 8px;
+  background: #fef2f2;
+  color: #991b1b;
+}
+
+.success-message {
+  max-width: 520px;
+  margin: 0 0 12px;
+  padding: 10px 12px;
+  border: 1px solid #86efac;
+  border-radius: 8px;
+  background: #f0fdf4;
+  color: #166534;
+}
+
+label {
+  display: block;
+  margin-bottom: 6px;
+  font-weight: 600;
+}
+
+input,
+textarea,
+select {
+  width: 100%;
+  border: 1px solid #cbd5e1;
+  border-radius: 8px;
+  padding: 10px 12px;
+  font: inherit;
+}
+
+input:focus,
+textarea:focus,
+select:focus {
+  outline: 2px solid #99f6e4;
+  outline-offset: 0;
+  border-color: var(--primary);
+}
+
+textarea {
+  resize: vertical;
+  min-height: 120px;
+}
+
+footer {
+  background: #0f172a;
+  color: #fff;
+  padding: 16px 0;
+}
+
+footer p {
+  margin: 0;
+  text-align: center;
+}
+
+@media (max-width: 640px) {
+  .header-inner {
+    flex-wrap: wrap;
+    padding: 10px 0;
+  }
+
+  .place-card,
+  .review-card {
+    margin: 12px 0;
+  }
+}

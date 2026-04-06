@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>HBnB - List of Places</title>
+    <link rel="icon" href="logo.png" type="image/png" />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <header>
+      <div class="container header-inner">
+        <a href="index.html" class="brand" aria-label="HBnB home">
+          <img src="logo.png" alt="HBnB logo" class="logo" />
+          <strong>HBnB</strong>
+        </a>
+        <nav aria-label="Main navigation">
+          <ul>
+            <li><a href="index.html" aria-current="page">Places</a></li>
+            <li><a href="place.html">Place Details</a></li>
+            <li><a href="add_review.html">Add Review</a></li>
+            <li><a href="login.html" id="login-link" class="login-button">Login</a></li>
+            <li><a href="#" id="logout-link" class="login-button" hidden>Logout</a></li>
+          </ul>
+        </nav>
+      </div>
+    </header>
+
+    <main>
+      <section class="container" aria-labelledby="places-title">
+        <h1 id="places-title" class="page-title">Available Places</h1>
+        <p class="muted">Choose a destination and open full details.</p>
+        <div class="filter-row">
+          <label for="price-filter">Max price</label>
+          <select id="price-filter" aria-label="Filter by maximum price">
+            <option value="10">10</option>
+            <option value="50">50</option>
+            <option value="100">100</option>
+            <option value="all" selected>All</option>
+          </select>
+        </div>
+        <p id="places-feedback" class="error-message" hidden></p>
+
+        <div id="places-list" class="grid" aria-live="polite"></div>
+      </section>
+    </main>
+
+    <footer>
+      <div class="container">
+        <p>All rights reserved.</p>
+      </div>
+    </footer>
+    <script src="scripts/index.js"></script>
+  </body>
+</html>

@@ -27,16 +27,10 @@ def _require_admin():
 
 @ns.route("/")
 class UserList(Resource):
-    @jwt_required()
     @ns.expect(user_model, validate=True)
     @ns.response(201, "User successfully created")
     @ns.response(400, "Email already registered")
-    @ns.response(403, "Admin privileges required")
     def post(self):
-        admin_error = _require_admin()
-        if admin_error:
-            return admin_error
-
         data = ns.payload
         existing = facade.get_user_by_email(data["email"])
         if existing:

@@ -11,6 +11,12 @@ from app.api.v1.reviews import ns as reviews_ns
 from app.api.v1.auth import api as auth_ns  # <-- IMPORTANT: your auth.py uses "api="
 from app.api.v1.amenities import ns as amenities_ns  # <-- NEW: add amenities namespace
 
+# Import models so SQLAlchemy metadata includes all tables before create_all.
+from app.models.user import User
+from app.models.place import Place
+from app.models.review import Review
+from app.models.amenity import Amenity
+
 def create_app(config_class="config.DevelopmentConfig"):
     app = Flask(__name__)
     app.config.from_object(config_class)
@@ -45,5 +51,8 @@ def create_app(config_class="config.DevelopmentConfig"):
     api.add_namespace(reviews_ns)
     api.add_namespace(auth_ns)
     api.add_namespace(amenities_ns)
+
+    with app.app_context():
+        db.create_all()
 
     return app

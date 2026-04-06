@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>HBnB - Place Details</title>
+    <link rel="icon" href="logo.png" type="image/png" />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <header>
+      <div class="container header-inner">
+        <a href="index.html" class="brand" aria-label="HBnB home">
+          <img src="logo.png" alt="HBnB logo" class="logo" />
+          <strong>HBnB</strong>
+        </a>
+        <nav aria-label="Main navigation">
+          <ul>
+            <li><a href="index.html">Places</a></li>
+            <li><a href="place.html" aria-current="page">Place Details</a></li>
+            <li><a href="add_review.html">Add Review</a></li>
+            <li><a href="login.html" id="login-link" class="login-button">Login</a></li>
+            <li><a href="#" id="logout-link" class="login-button" hidden>Logout</a></li>
+          </ul>
+        </nav>
+      </div>
+    </header>
+
+    <main>
+      <section class="container place-details" aria-labelledby="detail-title">
+        <h1 id="detail-title" class="page-title">Place Details</h1>
+        <p id="place-feedback" class="error-message" role="alert" hidden></p>
+        <div id="place-details" class="place-info"></div>
+      </section>
+
+      <section class="container" aria-labelledby="reviews-title">
+        <h2 id="reviews-title">Reviews</h2>
+
+        <div id="reviews-list"></div>
+
+        <div id="add-review-section" class="add-review" hidden>
+          <a id="add-review-link" href="add_review.html" class="button">Add a Review</a>
+        </div>
+      </section>
+    </main>
+
+    <footer>
+      <div class="container">
+        <p>All rights reserved.</p>
+      </div>
+    </footer>
+    <script src="scripts/place.js"></script>
+  </body>
+</html>

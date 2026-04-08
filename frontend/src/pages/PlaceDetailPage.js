@@ -1,13 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { placeAPI, reviewAPI } from '../api';
+import { placeAPI, reviewAPI, getApiErrorMessage } from '../api';
 import { useAuth } from '../contexts/AuthContext';
-import { FiMapPin, FiDollarSign, FiStar, FiArrowLeft, FiEdit2, FiTrash2, FiLoader } from 'react-icons/fi';
+import { FiMapPin, FiDollarSign, FiStar, FiArrowLeft, FiLoader } from 'react-icons/fi';
 
 export const PlaceDetailPage = () => {
   const { id } = useParams();
   const navigate = useNavigate();
-  const { isAuthenticated, token } = useAuth();
+  const { isAuthenticated, user } = useAuth();
   const [place, setPlace] = useState(null);
   const [reviews, setReviews] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -18,26 +18,13 @@ export const PlaceDetailPage = () => {
   useEffect(() => {
     const fetchPlace = async () => {
       setLoading(true);
+      setError(null);
       try {
         const response = await placeAPI.getPlace(id);
         setPlace(response.data);
-        // Mock reviews - in real app would fetch from API
-        setReviews([
-          {
-            id: '1',
-            user_id: 'user1',
-            text: 'Amazing place! Very clean and comfortable.',
-            rating: 5,
-          },
-          {
-            id: '2',
-            user_id: 'user2',
-            text: 'Good location, friendly host.',
-            rating: 4,
-          },
-        ]);
+        setReviews(Array.isArray(response.data.reviews) ? response.data.reviews : []);
       } catch (err) {
-        setError('Failed to load place details');
+        setError(getApiErrorMessage(err, 'Failed to load place details'));
       } finally {
         setLoading(false);
       }
@@ -60,19 +47,11 @@ export const PlaceDetailPage = () => {
         text: newReview.text,
         rating: newReview.rating,
       });
+      const refreshed = await placeAPI.getPlace(id);
+      setReviews(Array.isArray(refreshed.data.reviews) ? refreshed.data.reviews : []);
       setNewReview({ text: '', rating: 5 });
-      // Refetch reviews
-      setReviews([
-        ...reviews,
-        {
-          id: Date.now().toString(),
-          user_id: 'current_user',
-          text: newReview.text,
-          rating: newReview.rating,
-        },
-      ]);
     } catch (err) {
-      setError('Failed to submit review');
+      setError(getApiErrorMessage(err, 'Failed to submit review'));
     } finally {
       setSubmitting(false);
     }
@@ -100,7 +79,10 @@ export const PlaceDetailPage = () => {
     );
   }
 
-  const avgRating = reviews.length > 0 ? (reviews.reduce((sum, r) => sum + r.rating, 0) / reviews.length).toFixed(1) : 0;
+  const avgRating =
+    reviews.length > 0
+      ? (reviews.reduce((sum, r) => sum + Number(r.rating || 0), 0) / reviews.length).toFixed(1)
+      : 0;
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -158,7 +140,7 @@ export const PlaceDetailPage = () => {
         <div className="bg-white rounded-2xl shadow-lg p-8 mb-8">
           <h2 className="text-2xl font-bold mb-6">Reviews</h2>
 
-          {isAuthenticated && (
+          {isAuthenticated && user?.id !== place.owner_id && (
             <form onSubmit={handleSubmitReview} className="mb-8 pb-8 border-b">
               <h3 className="text-lg font-semibold mb-4">Leave a Review</h3>
               <div className="space-y-4">
@@ -210,7 +192,7 @@ export const PlaceDetailPage = () => {
                         {review.user_id[0].toUpperCase()}
                       </div>
                       <div>
-                        <p className="font-semibold text-gray-900">{review.user_id}</p>
+                        <p className="font-semibold text-gray-900">{review.user?.email || review.user_id}</p>
                         <div className="flex items-center gap-1">
                           {[...Array(review.rating)].map((_, i) => (
                             <FiStar key={i} className="text-amber-500 fill-amber-500" size={16} />

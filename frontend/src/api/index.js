@@ -2,13 +2,22 @@ import axios from 'axios';
 
 const API_BASE = process.env.REACT_APP_API_URL || '/api/v1';
 
-export const 
-api = axios.create({
+export const api = axios.create({
   baseURL: API_BASE,
   headers: {
     'Content-Type': 'application/json',
   },
 });
+
+export const getApiErrorMessage = (err, fallback = 'Request failed') => {
+  return (
+    err?.response?.data?.error ||
+    err?.response?.data?.message ||
+    err?.response?.data?.msg ||
+    err?.message ||
+    fallback
+  );
+};
 
 // Add token to requests
 api.interceptors.request.use((config) => {

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import { placeAPI } from '../api';
+import { placeAPI, getApiErrorMessage } from '../api';
 import { useAuth } from '../contexts/AuthContext';
 import { FiPlus, FiEdit2, FiTrash2, FiMapPin, FiDollarSign, FiLoader } from 'react-icons/fi';
 
@@ -9,26 +9,28 @@ export const MyPlacesPage = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const navigate = useNavigate();
-  const { token } = useAuth();
+  const { token, user } = useAuth();
 
   useEffect(() => {
     const fetchPlaces = async () => {
       setLoading(true);
+      setError(null);
       try {
         const response = await placeAPI.getAllPlaces();
-        // In a real app, would filter by current user
-        setPlaces(response.data);
+        const allPlaces = Array.isArray(response.data) ? response.data : [];
+        const mine = allPlaces.filter((place) => place.owner_id === user?.id);
+        setPlaces(mine);
       } catch (err) {
-        setError('Failed to fetch your places');
+        setError(getApiErrorMessage(err, 'Failed to fetch your places'));
       } finally {
         setLoading(false);
       }
     };
 
-    if (token) {
+    if (token && user?.id) {
       fetchPlaces();
     }
-  }, [token]);
+  }, [token, user?.id]);
 
   const handleDelete = async (placeId) => {
     if (window.confirm('Are you sure you want to delete this place?')) {

@@ -56,7 +56,12 @@ export const HomePage = () => {
                 type="number"
                 min="0"
                 value={filter.minPrice}
-                onChange={(e) => setFilter({ ...filter, minPrice: parseInt(e.target.value) })}
+                onChange={(e) =>
+                  setFilter({
+                    ...filter,
+                    minPrice: e.target.value === '' ? 0 : parseInt(e.target.value, 10),
+                  })
+                }
                 className="w-32 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500"
                 placeholder="$0"
               />
@@ -66,7 +71,12 @@ export const HomePage = () => {
               <input
                 type="number"
                 value={filter.maxPrice}
-                onChange={(e) => setFilter({ ...filter, maxPrice: parseInt(e.target.value) })}
+                onChange={(e) =>
+                  setFilter({
+                    ...filter,
+                    maxPrice: e.target.value === '' ? Number.MAX_SAFE_INTEGER : parseInt(e.target.value, 10),
+                  })
+                }
                 className="w-32 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500"
                 placeholder="$10000"
               />

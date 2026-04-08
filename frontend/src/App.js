@@ -9,6 +9,7 @@ import { RegisterPage } from './pages/RegisterPage';
 import { PlaceDetailPage } from './pages/PlaceDetailPage';
 import { CreatePlacePage } from './pages/CreatePlacePage';
 import { MyPlacesPage } from './pages/MyPlacesPage';
+import { EditPlacePage } from './pages/EditPlacePage';
 import { AdminAmenitiesPage } from './pages/AdminAmenitiesPage';
 import './index.css';
 
@@ -43,12 +44,20 @@ function App() {
                   </ProtectedRoute>
                 }
               />
+              <Route
+                path="/edit-place/:id"
+                element={
+                  <ProtectedRoute>
+                    <EditPlacePage />
+                  </ProtectedRoute>
+                }
+              />
 
               {/* Admin Routes */}
               <Route
                 path="/admin/amenities"
                 element={
-                  <ProtectedRoute>
+                  <ProtectedRoute adminOnly>
                     <AdminAmenitiesPage />
                   </ProtectedRoute>
                 }

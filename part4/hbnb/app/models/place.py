@@ -31,6 +31,8 @@ class Place(BaseModel):
             raise ValidationError("title is required")
         if price is None:
             raise ValidationError("price is required")
+        if float(price) <= 0:
+            raise ValidationError("price must be greater than 0")
         if latitude is None:
             raise ValidationError("latitude is required")
         if longitude is None:

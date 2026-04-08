@@ -27,6 +27,16 @@ def _require_admin():
 
 @ns.route("/")
 class UserList(Resource):
+    @ns.response(200, "Users retrieved successfully")
+    def get(self):
+        users = facade.list_users()
+        return [{
+            "id": user.id,
+            "first_name": user.first_name,
+            "last_name": user.last_name,
+            "email": user.email,
+        } for user in users], 200
+
     @jwt_required()
     @ns.expect(user_model, validate=True)
     @ns.response(201, "User successfully created")

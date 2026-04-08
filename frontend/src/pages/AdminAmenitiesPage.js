@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { amenityAPI } from '../api';
+import { amenityAPI, getApiErrorMessage } from '../api';
 import { useAuth } from '../contexts/AuthContext';
-import { FiPlus, FiEdit2, FiTrash2, FiLoader, FiAlertCircle } from 'react-icons/fi';
+import { FiPlus, FiEdit2, FiLoader, FiAlertCircle, FiCheck, FiX, FiTrash2 } from 'react-icons/fi';
 
 export const AdminAmenitiesPage = () => {
   const [amenities, setAmenities] = useState([]);
@@ -9,16 +9,20 @@ export const AdminAmenitiesPage = () => {
   const [error, setError] = useState(null);
   const [newAmenity, setNewAmenity] = useState('');
   const [submitting, setSubmitting] = useState(false);
-  const { isAuthenticated } = useAuth();
+  const [editingAmenityId, setEditingAmenityId] = useState(null);
+  const [editingAmenityName, setEditingAmenityName] = useState('');
+  const [updating, setUpdating] = useState(false);
+  const { isAuthenticated, isAdmin } = useAuth();
 
   useEffect(() => {
     const fetchAmenities = async () => {
       setLoading(true);
+      setError(null);
       try {
         const response = await amenityAPI.getAllAmenities();
         setAmenities(response.data);
       } catch (err) {
-        setError('Failed to fetch amenities');
+        setError(getApiErrorMessage(err, 'Failed to fetch amenities'));
       } finally {
         setLoading(false);
       }
@@ -37,24 +41,56 @@ export const AdminAmenitiesPage = () => {
       setAmenities([...amenities, response.data]);
       setNewAmenity('');
     } catch (err) {
-      setError(err.response?.data?.error || 'Failed to create amenity');
+      setError(getApiErrorMessage(err, 'Failed to create amenity'));
     } finally {
       setSubmitting(false);
     }
   };
 
-  const handleDeleteAmenity = async (amenityId) => {
-    if (window.confirm('Delete this amenity?')) {
-      try {
-        // await amenityAPI.deleteAmenity(amenityId); // When endpoint available
-        setAmenities(amenities.filter(a => a.id !== amenityId));
-      } catch (err) {
-        setError('Failed to delete amenity');
-      }
+  const startEditAmenity = (amenity) => {
+    setEditingAmenityId(amenity.id);
+    setEditingAmenityName(amenity.name);
+  };
+
+  const cancelEditAmenity = () => {
+    setEditingAmenityId(null);
+    setEditingAmenityName('');
+  };
+
+  const saveEditAmenity = async (amenityId) => {
+    if (!editingAmenityName.trim()) {
+      return;
+    }
+
+    setUpdating(true);
+    try {
+      const response = await amenityAPI.updateAmenity(amenityId, { name: editingAmenityName.trim() });
+      setAmenities((current) => current.map((amenity) => (amenity.id === amenityId ? response.data : amenity)));
+      cancelEditAmenity();
+    } catch (err) {
+      setError(getApiErrorMessage(err, 'Failed to update amenity'));
+    } finally {
+      setUpdating(false);
     }
   };
 
-  if (!isAuthenticated) {
+  const handleDeleteAmenity = async (amenityId) => {
+    if (!window.confirm('Delete this amenity?')) {
+      return;
+    }
+
+    try {
+      await amenityAPI.deleteAmenity(amenityId);
+      setAmenities((current) => current.filter((amenity) => amenity.id !== amenityId));
+      if (editingAmenityId === amenityId) {
+        cancelEditAmenity();
+      }
+    } catch (err) {
+      setError(getApiErrorMessage(err, 'Failed to delete amenity'));
+    }
+  };
+
+  if (!isAuthenticated || !isAdmin) {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
         <div className="bg-white rounded-lg shadow-lg p-8 max-w-md w-full text-center">
@@ -113,20 +149,54 @@ export const AdminAmenitiesPage = () => {
                       key={amenity.id}
                       className="bg-gradient-to-br from-purple-50 to-pink-50 rounded-lg p-4 flex justify-between items-center"
                     >
-                      <span className="font-semibold text-gray-900">{amenity.name}</span>
+                      {editingAmenityId === amenity.id ? (
+                        <input
+                          type="text"
+                          value={editingAmenityName}
+                          onChange={(e) => setEditingAmenityName(e.target.value)}
+                          className="font-semibold text-gray-900 bg-white border border-gray-300 rounded px-2 py-1 w-full mr-2"
+                        />
+                      ) : (
+                        <span className="font-semibold text-gray-900">{amenity.name}</span>
+                      )}
                       <div className="flex gap-2">
-                        <button
-                          onClick={() => {/* edit handler */}}
-                          className="text-blue-600 hover:text-blue-700 p-1"
-                        >
-                          <FiEdit2 size={18} />
-                        </button>
-                        <button
-                          onClick={() => handleDeleteAmenity(amenity.id)}
-                          className="text-red-600 hover:text-red-700 p-1"
-                        >
-                          <FiTrash2 size={18} />
-                        </button>
+                        {editingAmenityId === amenity.id ? (
+                          <>
+                            <button
+                              onClick={() => saveEditAmenity(amenity.id)}
+                              disabled={updating}
+                              className="text-green-600 hover:text-green-700 p-1 disabled:opacity-50"
+                              title="Save"
+                            >
+                              <FiCheck size={18} />
+                            </button>
+                            <button
+                              onClick={cancelEditAmenity}
+                              disabled={updating}
+                              className="text-red-600 hover:text-red-700 p-1 disabled:opacity-50"
+                              title="Cancel"
+                            >
+                              <FiX size={18} />
+                            </button>
+                          </>
+                        ) : (
+                          <>
+                            <button
+                              onClick={() => startEditAmenity(amenity)}
+                              className="text-blue-600 hover:text-blue-700 p-1"
+                              title="Edit"
+                            >
+                              <FiEdit2 size={18} />
+                            </button>
+                            <button
+                              onClick={() => handleDeleteAmenity(amenity.id)}
+                              className="text-red-600 hover:text-red-700 p-1"
+                              title="Delete"
+                            >
+                              <FiTrash2 size={18} />
+                            </button>
+                          </>
+                        )}
                       </div>
                     </div>
                   ))}

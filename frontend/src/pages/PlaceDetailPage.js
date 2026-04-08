@@ -109,7 +109,7 @@ export const PlaceDetailPage = () => {
               </div>
               <div className="text-right">
                 <div className="text-3xl font-bold text-purple-600 flex items-center gap-1">
-                  <FiDollarSign /> {place.price}
+                  <FiDollarSign /> {Number(place.price).toFixed(2)}
                 </div>
                 <p className="text-gray-600">/night</p>
               </div>
@@ -129,8 +129,8 @@ export const PlaceDetailPage = () => {
                 </div>
               </div>
               <div className="bg-pink-50 rounded-lg p-4">
-                <p className="text-sm text-gray-600">Owner ID</p>
-                <p className="text-xl font-semibold text-gray-900 mt-2">{place.owner_id}</p>
+                <p className="text-sm text-gray-600">Hosted by</p>
+                <p className="text-xl font-semibold text-gray-900 mt-2">HBnB host</p>
               </div>
             </div>
           </div>

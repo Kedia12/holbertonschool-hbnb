@@ -5,7 +5,7 @@ import { FiHome, FiPlus, FiLogOut, FiLogIn, FiUser, FiMenu, FiX, FiSettings } fr
 import { useState } from 'react';
 
 export const Header = () => {
-  const { isAuthenticated, logout } = useAuth();
+  const { isAuthenticated, isAdmin, logout } = useAuth();
   const navigate = useNavigate();
   const [menuOpen, setMenuOpen] = useState(false);
 
@@ -47,13 +47,15 @@ export const Header = () => {
               >
                 <FiPlus /> List Place
               </Link>
-              <Link
-                to="/admin/amenities"
-                className="flex items-center gap-1 text-gray-700 hover:text-purple-600 font-medium"
-                title="Admin Panel"
-              >
-                <FiSettings />
-              </Link>
+              {isAdmin && (
+                <Link
+                  to="/admin/amenities"
+                  className="flex items-center gap-1 text-gray-700 hover:text-purple-600 font-medium"
+                  title="Admin Panel"
+                >
+                  <FiSettings />
+                </Link>
+              )}
               <button
                 onClick={handleLogout}
                 className="flex items-center gap-1 bg-gradient-to-r from-purple-600 to-pink-600 text-white px-4 py-2 rounded-lg hover:from-purple-700 hover:to-pink-700 font-medium"
@@ -115,13 +117,15 @@ export const Header = () => {
               >
                 <FiPlus /> List Place
               </Link>
-              <Link
-                to="/admin/amenities"
-                onClick={() => setMenuOpen(false)}
-                className="block flex items-center gap-2 text-gray-700 hover:text-purple-600 py-2 font-medium"
-              >
-                <FiSettings /> Admin
-              </Link>
+              {isAdmin && (
+                <Link
+                  to="/admin/amenities"
+                  onClick={() => setMenuOpen(false)}
+                  className="block flex items-center gap-2 text-gray-700 hover:text-purple-600 py-2 font-medium"
+                >
+                  <FiSettings /> Admin
+                </Link>
+              )}
               <button
                 onClick={handleLogout}
                 className="w-full text-left flex items-center gap-2 bg-gradient-to-r from-purple-600 to-pink-600 text-white px-4 py-2 rounded-lg font-medium"

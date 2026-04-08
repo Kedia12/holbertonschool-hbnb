@@ -126,10 +126,10 @@ export const HomePage = () => {
                 <div className="flex justify-between items-center">
                   <div className="flex items-center gap-1 text-amber-500">
                     <FiDollarSign />
-                    <span className="font-bold text-lg">{place.price}/night</span>
+                    <span className="font-bold text-lg">{Number(place.price).toFixed(2)}/night</span>
                   </div>
                   <div className="text-xs bg-purple-100 text-purple-700 px-3 py-1 rounded-full">
-                    {place.owner_id}
+                    Host
                   </div>
                 </div>
               </div>

@@ -61,4 +61,5 @@ export const amenityAPI = {
   getAmenity: (amenityId) => api.get(`/amenities/${amenityId}`),
   createAmenity: (amenityData) => api.post('/amenities/', amenityData),
   updateAmenity: (amenityId, amenityData) => api.put(`/amenities/${amenityId}`, amenityData),
+  deleteAmenity: (amenityId) => api.delete(`/amenities/${amenityId}`),
 };

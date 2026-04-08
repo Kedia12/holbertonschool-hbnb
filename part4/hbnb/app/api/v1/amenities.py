@@ -57,3 +57,15 @@ class AmenityResource(Resource):
         if not updated:
             return {"error": "Amenity not found"}, 404
         return {"id": updated.id, "name": updated.name}, 200
+
+    # ADMIN ONLY
+    @jwt_required()
+    def delete(self, amenity_id):
+        admin_error = _require_admin()
+        if admin_error:
+            return admin_error
+
+        deleted = facade.delete_amenity(amenity_id)
+        if not deleted:
+            return {"error": "Amenity not found"}, 404
+        return "", 204

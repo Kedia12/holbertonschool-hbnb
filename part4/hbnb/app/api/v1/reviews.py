@@ -17,6 +17,22 @@ update_review_model = ns.model("ReviewUpdate", {
 
 @ns.route("/")
 class ReviewList(Resource):
+    def get(self):
+        reviews = facade.list_reviews()
+        return [{
+            "id": review.id,
+            "place_id": review.place_id,
+            "user_id": review.user_id,
+            "text": review.text,
+            "rating": review.rating,
+            "user": {
+                "id": review.author.id if review.author else review.user_id,
+                "first_name": review.author.first_name if review.author else None,
+                "last_name": review.author.last_name if review.author else None,
+                "email": review.author.email if review.author else None,
+            },
+        } for review in reviews], 200
+
     @jwt_required()
     @ns.expect(review_model, validate=True)
     def post(self):
